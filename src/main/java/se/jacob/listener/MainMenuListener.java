@@ -2,6 +2,7 @@ package se.jacob.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -15,7 +16,6 @@ import se.jacob.panel.ExistingRecipe;
 import se.jacob.panel.NewRecipe;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
-//import se.jacob.panel.ListRecipes;
 
 public class MainMenuListener implements ActionListener {
 	
@@ -35,11 +35,18 @@ public class MainMenuListener implements ActionListener {
 			}
 			case "New Recipe": {
 				JTabbedPane tabbedPane = (JTabbedPane) GUI.getComponent("TabbedPane");
-				NewRecipe recipeView = new NewRecipe(tabbedPane);
-				recipeView.addClosableTab();
-				log.info("New Recipe tab opened");
+				NewRecipe recipeView = null;
+				try {
+					recipeView = new NewRecipe(tabbedPane);
+					recipeView.addClosableTab();
+					log.info("New Recipe tab opened");
+				} catch (FileNotFoundException e1) {
+					break;
+				}				
+			
 				break;
 			}
+			
 			case "Open Recipe": {
 				RecipeObject obj = FileHandler.searchForRecipe(parent);
 				if (obj == null) {
@@ -50,10 +57,15 @@ public class MainMenuListener implements ActionListener {
 				Integer idAttribute = obj.getId();
 				if (idAttribute != null && (idAttribute > 0)) {
 					JTabbedPane tabbedPane = (JTabbedPane) GUI.getComponent("TabbedPane");
-					ExistingRecipe recipeView = new ExistingRecipe(tabbedPane, obj);
-					recipeView.addClosableTab();
+					ExistingRecipe recipeView;
+					try {
+						recipeView = new ExistingRecipe(tabbedPane, obj);
+						recipeView.addClosableTab();
+						log.info("Recipe with ID: {} and name: {}", obj.getId(), obj.getTitle());
+					} catch (FileNotFoundException e1) {
+
+					}
 				}
-				log.info("Recipe with ID: {} and name: {}", obj.getId(), obj.getTitle());
 				break;
 			}
 		}

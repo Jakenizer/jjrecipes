@@ -22,7 +22,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 public class SearchTool {
-	private static Logger log = LoggerFactory.getLogger(SearchTool.class.getName());
+	//private static Logger log = LoggerFactory.getLogger(SearchTool.class.getName());
 
 	
 	/**
@@ -145,8 +145,6 @@ public class SearchTool {
 		    document = builder.parse(
 		            new FileInputStream(Constants.XML_PATH));
 		} catch (SAXException | IOException e) {
-			log.warn("No recipe with title containing '{}' found", title);
-			//e.printStackTrace();
 		    return null;
 		}
 		

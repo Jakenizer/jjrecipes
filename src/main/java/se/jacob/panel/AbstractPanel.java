@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -30,14 +31,14 @@ public abstract class AbstractPanel extends JPanel {
 	
 //	protected String theTitle;
 	
-	public AbstractPanel(JTabbedPane parent) {
+	public AbstractPanel(JTabbedPane parent) throws FileNotFoundException {
 		this.parent = parent;
 		setBackground(Color.LIGHT_GRAY);
 		URL url = getClass().getResource("/closeTabButton.png");
 		//CLOSE_TAB_ICON = new ImageIcon(getClass().getResource("/closeTabButton.png"));
 		if (url == null) {
 			log.error("closeTabButton.jpg not found in src/main/resources");
-			throw new IllegalArgumentException("closeTabButton.png cannot be found");
+			throw new FileNotFoundException("closeTabButton.png cannot be found");
 		} 
 			
 		CLOSE_TAB_ICON = new ImageIcon(url);

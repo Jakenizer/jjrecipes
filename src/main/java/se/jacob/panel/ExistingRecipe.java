@@ -2,6 +2,7 @@ package se.jacob.panel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ExistingRecipe extends CommonRecipeView {
 	private static final long serialVersionUID = 1L;
 	private RecipeObject obj;
 	
-	public ExistingRecipe(JTabbedPane parent, RecipeObject obj) {
+	public ExistingRecipe(JTabbedPane parent, RecipeObject obj) throws FileNotFoundException {
 		super(parent);
 		this.obj = obj;
 		String contentString = obj.getContent();

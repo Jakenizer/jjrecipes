@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -35,7 +36,7 @@ public abstract class CommonRecipeView extends AbstractPanel{
 	protected final JList<String> ingredientList;
 //	protected RecipeObject object;
 
-	public CommonRecipeView(JTabbedPane parent) {
+	public CommonRecipeView(JTabbedPane parent) throws FileNotFoundException {
 		super(parent);
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

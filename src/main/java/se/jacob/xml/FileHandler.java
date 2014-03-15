@@ -9,6 +9,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -31,6 +33,8 @@ import javax.xml.transform.stream.StreamResult;
 
 
 public class FileHandler {
+	
+	private static Logger log = LoggerFactory.getLogger(FileHandler.class.getName());
 
 	public static boolean saveNewRecipeToFile(RecipeObject obj) {
 		File f = new File(Constants.XML_PATH);
@@ -60,7 +64,13 @@ public class FileHandler {
 			e.printStackTrace();
 			success = false;
 		}
-
+		if(success) {
+			log.info("New save file 'recipes.xml' created");
+		}
+		else {
+			log.error("Could not create new 'recipes.xml' file");
+		}
+			
 		return success;
 	}
 
@@ -103,10 +113,16 @@ public class FileHandler {
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			xmlOutput.output(document, new FileWriter(Constants.XML_PATH));
 		} catch (IOException | JDOMException ex) {
-			System.err.println(ex.getMessage());
 			success = false;
 		} 
-
+		
+		if(success) {
+			log.info("New recipes added to save file 'recipes.xml'");
+		}
+		else {
+			log.error("Could not add recipe to save file 'recipes.xml'");
+		}
+		
 		return success;
 	}
 	
@@ -122,9 +138,11 @@ public class FileHandler {
             );
 			
 			NodeList recipeList = SearchTool.searchForNodesByTitle(queryString);
-			if (recipeList == null)
+			if (recipeList == null) {
+				log.warn("No recipe with title containing '{}' found", queryString);
 				return null;
-						
+			}
+			
 			String idAttribute = null;
 			if (recipeList.getLength() == 1) {
 				idAttribute = recipeList.item(0).getAttributes().item(0).getTextContent();
