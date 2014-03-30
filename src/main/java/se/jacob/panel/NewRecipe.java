@@ -7,14 +7,20 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import se.jacob.exception.SaveFileException;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
 public class NewRecipe extends CommonRecipeView {
 
 	private static final long serialVersionUID = 1L;	
+	private static final Logger LOG = LoggerFactory.getLogger(NewRecipe.class);
 
 	public NewRecipe(JTabbedPane parent) throws FileNotFoundException {
 		super(parent);
@@ -43,7 +49,12 @@ public class NewRecipe extends CommonRecipeView {
 				
 				RecipeObject obj = new RecipeObject(null, title, content, ingredients);
 				
-				FileHandler.persist(obj);
+				try {
+					FileHandler.persist(obj);
+				} catch (SaveFileException ex) {
+					LOG.error(ex.getMessage());
+					JOptionPane.showMessageDialog(parent, "Could not save file", "File saving error", ERROR);
+				}
 			}
 		};
 	}

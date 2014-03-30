@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import se.jacob.Constants;
+import se.jacob.exception.SaveFileException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,7 +37,7 @@ public class FileHandler {
 	
 	private static Logger log = LoggerFactory.getLogger(FileHandler.class.getName());
 
-	public static boolean saveNewRecipeToFile(RecipeObject obj) {
+	public static boolean saveNewRecipeToFile(RecipeObject obj) throws SaveFileException {
 		File f = new File(Constants.XML_PATH);
 		if(!f.exists()){
 			createNewEmptyFile();
@@ -45,33 +46,21 @@ public class FileHandler {
 		return addRecipe(obj);
 	}
 
-	private static boolean createNewEmptyFile() {
-		boolean success = true;
-
+	private static void createNewEmptyFile() throws SaveFileException {
 		Element root = new Element("recipes");
 		Document doc = new Document(root);
 		try {
 			XMLOutputter outputter = new XMLOutputter();
 			outputter.setFormat(Format.getPrettyFormat());
 			File file = new File(Constants.XML_PATH);
-			if (!file.exists()) {
+			if (file != null && !file.exists()) {
 				file.createNewFile();
+				outputter.output(doc, new FileWriter(file.getAbsoluteFile()));
 			}
-
-			outputter.output(doc, new FileWriter(file.getAbsoluteFile()));
 		}
 		catch (IOException e) {
-			e.printStackTrace();
-			success = false;
+			throw new SaveFileException("Cannot create save file recipes.xml", e);
 		}
-		if(success) {
-			log.info("New save file 'recipes.xml' created");
-		}
-		else {
-			log.error("Could not create new 'recipes.xml' file");
-		}
-			
-		return success;
 	}
 
 	private static boolean addRecipe(RecipeObject obj) {
@@ -136,6 +125,11 @@ public class FileHandler {
                 null,
                 ""
             );
+		
+			if (queryString == null || queryString.length() == 0) {
+				log.warn("Search string must be at least one letter long");
+				return null;
+			}
 			
 			NodeList recipeList = SearchTool.searchForNodesByTitle(queryString);
 			if (recipeList == null) {
@@ -171,6 +165,9 @@ public class FileHandler {
 				idAttribute = result.split(": ")[0].trim();
 			}
 			Node recipe = SearchTool.searchForSingleNodeById(idAttribute);
+			if (recipe == null) {
+				return null;
+			}
 			String t = recipe.getChildNodes().item(1).getTextContent();
 			String content = recipe.getChildNodes().item(3).getTextContent();
 			
@@ -184,7 +181,7 @@ public class FileHandler {
 			return new RecipeObject(new Integer(idAttribute), t, content, ingredients);
 	}
 	
-	public static boolean persist(RecipeObject obj) {
+	public static boolean persist(RecipeObject obj) throws SaveFileException {
 		Integer id = obj.getId();
 		if (id == null) {
 			saveNewRecipeToFile(obj);

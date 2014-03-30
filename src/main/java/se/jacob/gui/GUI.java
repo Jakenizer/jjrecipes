@@ -2,6 +2,8 @@ package se.jacob.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,10 +28,9 @@ public class GUI extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private static Map<String, JComponent> components = new HashMap<>();
 	private static Logger log = LoggerFactory.getLogger(GUI.class.getName());
-	
+	 
 	public GUI() {
 		DOMConfigurator.configure("src/main/resources/log4j.xml");
-		log.info("HEJ HEJ");
 		
 		setTitle("JJ Recipes " + Constants.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,32 +39,40 @@ public class GUI extends JFrame{
 		
 		//meny
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu1 = new JMenu("File");
+		JMenu fileMenu = new JMenu("File");
 		JMenuItem newRecipeItem = new JMenuItem("New Recipe");
 		JMenuItem listRecipesItem = new JMenuItem("List Recipes");
-		JMenuItem searchRecipesItem = new JMenuItem("Search Recipes");
+		//JMenuItem searchRecipesItem = new JMenuItem("Search Recipes");
 		JMenuItem openRecipesItem = new JMenuItem("Open Recipe");
 		JMenuItem quitItem = new JMenuItem("Quit");
 		
-        //snabbknappar
-		newRecipeItem.setAccelerator(KeyStroke.getKeyStroke('n'));
-		listRecipesItem.setAccelerator(KeyStroke.getKeyStroke('l'));
-		searchRecipesItem.setAccelerator(KeyStroke.getKeyStroke('s'));
-		openRecipesItem.setAccelerator(KeyStroke.getKeyStroke('o'));
-		quitItem.setAccelerator(KeyStroke.getKeyStroke('q'));
+		fileMenu.add(newRecipeItem);
+		fileMenu.add(listRecipesItem);
+		//menu1.add(searchRecipesItem);
+		fileMenu.add(openRecipesItem);
+		fileMenu.add(quitItem);
 		
-		menu1.add(newRecipeItem);
-		menu1.add(listRecipesItem);
-		menu1.add(searchRecipesItem);
-		menu1.add(openRecipesItem);
-		menu1.add(quitItem);
+		JMenu advancedMenu = new JMenu("Advanced");
+		JMenuItem validateXMLIds = new JMenuItem("Validate: Unique XML ids");
+		advancedMenu.add(validateXMLIds);
 
 		MainMenuListener mainListener = new MainMenuListener(this);
 		newRecipeItem.addActionListener(mainListener);
 		listRecipesItem.addActionListener(mainListener);
 		openRecipesItem.addActionListener(mainListener);
 		quitItem.addActionListener(mainListener);
-		menuBar.add(menu1);
+		validateXMLIds.addActionListener(mainListener);
+		
+        //snabbknappar
+		newRecipeItem.setAccelerator(KeyStroke.getKeyStroke('n'));
+		listRecipesItem.setAccelerator(KeyStroke.getKeyStroke('l'));
+		//searchRecipesItem.setAccelerator(KeyStroke.getKeyStroke('s'));
+		openRecipesItem.setAccelerator(KeyStroke.getKeyStroke('o'));
+		quitItem.setAccelerator(KeyStroke.getKeyStroke('q'));
+		validateXMLIds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.SHIFT_DOWN_MASK));
+		
+		menuBar.add(fileMenu);
+		menuBar.add(advancedMenu);
 		setJMenuBar(menuBar);
 		
 		//tabbar
@@ -93,7 +102,7 @@ public class GUI extends JFrame{
                         //  "com.sun.java.swing.plaf.motif.MotifLookAndFeel");
                         //UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage());
         }
 		new GUI();
 	}

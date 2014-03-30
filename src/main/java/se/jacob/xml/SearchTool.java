@@ -22,7 +22,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 public class SearchTool {
-	//private static Logger log = LoggerFactory.getLogger(SearchTool.class.getName());
+	private static Logger log = LoggerFactory.getLogger(SearchTool.class.getName());
 
 	
 	/**
@@ -131,6 +131,9 @@ public class SearchTool {
 		Document document;
 		NodeList nodeList = null;
 		
+		if (title == null || title.length() == 0)
+			return null;
+		
 		DocumentBuilderFactory builderFactory =
 		        DocumentBuilderFactory.newInstance();
 		
@@ -159,5 +162,54 @@ public class SearchTool {
 		}
 		
 		return nodeList;	
+	}
+	
+	
+	public static NodeList getDuplicateNodes() throws Exception {
+		DocumentBuilder builder;
+		Document document;
+		NodeList nodeList = null;
+		
+		DocumentBuilderFactory builderFactory =
+		        DocumentBuilderFactory.newInstance();
+		
+		try {
+		    builder = builderFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+		    e.printStackTrace();
+		    throw new Exception("det blev del");
+		}
+		
+		try {
+		    document = builder.parse(
+		            new FileInputStream(Constants.XML_PATH));
+		} catch (SAXException | IOException e) {
+		    e.printStackTrace();
+		    throw new Exception("Det blev fel");
+		}
+		
+		XPath xPath =  XPathFactory.newInstance().newXPath();
+		
+		String expression = "//recipes/recipe[(@id=preceding::recipe/@id)]"; //@id;
+
+		try {
+			nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			log.error(e.getMessage());
+		}
+		//System.out.println(nodeList.getLength());
+		return nodeList;
+		/*for (int i = 0; i < nodeList.getLength(); i++) {
+			Node n = nodeList.item(i);
+			System.out.println(n.getTextContent());
+		}*/
+	}
+	
+	public static void resolveDuplicatesInXML() throws Exception {
+		NodeList list = getDuplicateNodes();
+		if (list.getLength() == 0)
+			return;
+		
+		
 	}
 }

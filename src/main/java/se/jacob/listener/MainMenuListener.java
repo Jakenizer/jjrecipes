@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import se.jacob.gui.GUI;
 import se.jacob.panel.ExistingRecipe;
+import se.jacob.panel.ListRecipes;
 import se.jacob.panel.NewRecipe;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
+import se.jacob.xml.SearchTool;
 
 public class MainMenuListener implements ActionListener {
 	
@@ -67,6 +69,28 @@ public class MainMenuListener implements ActionListener {
 					}
 				}
 				break;
+			}
+			
+			case "List Recipes": {
+				JTabbedPane tabbedPane = (JTabbedPane) GUI.getComponent("TabbedPane");
+				try {
+					ListRecipes listView = new ListRecipes(tabbedPane);
+					listView.addClosableTab();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			case "Validate: Unique XML ids" : {
+				/*try {
+					boolean isOk = SearchTool.validateUniqueIds();
+					if (!isOk) {
+						log.error("Corrupt XML save file: " +
+								"There are one or more duplicate recipe objects in recipes.xml");
+					}
+				} catch (Exception e1) {
+					log.error(e1.getMessage());
+				}*/
 			}
 		}
 	}
