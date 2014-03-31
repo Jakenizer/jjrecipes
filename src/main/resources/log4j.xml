@@ -10,6 +10,7 @@
 	</appender>
 
 	<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
+      <param name="MaxFileSize" value="100KB" />
       <param name="Threshold" value="DEBUG" />
       <param name="append" value="true"/>
       <param name="file" value="/Users/jacobflarup/programmering/Praktiskt/jjrecipeLog.log"/>
