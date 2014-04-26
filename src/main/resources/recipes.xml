@@ -1,73 +1,27 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><recipes>
+<?xml version="1.0" encoding="UTF-8"?>
+<recipes>
   <recipe id="1">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
+    <title>New Recipe1</title>
+    <content>blanda ihop
+kdlskdfsd
+s
+dfksdfölskdf
+sdföksödlfksö</content>
+    <ingredients>hej;svej;bajs;tjosan</ingredients>
   </recipe>
   <recipe id="2">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
+    <title>köttbollzizar</title>
+    <content>blanda, stek och ät med spaghetti</content>
+    <ingredients>boll;kött;bajs</ingredients>
   </recipe>
   <recipe id="3">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
-  </recipe>
-  <recipe id="1">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
+    <title>köttbollar</title>
+    <content>blanda, stek och ät med spaghetti</content>
+    <ingredients>boll;kött;bajs</ingredients>
   </recipe>
   <recipe id="4">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
-  </recipe>
-  <recipe id="5">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
-  </recipe>
-  <recipe id="4">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
-  </recipe>
-  <recipe id="6">
-    <title>New Recipe</title>
-    <content>jkfdgdfgj
-djfgkdfg
-dfkgjf
-gdfkljg</content>
-    <ingredients>lkre;dfdsf;df</ingredients>
-  </recipe>
-  <recipe id="7">
-    <title>Joninas k�ttgryta</title>
-    <content>l�gg k�ttet i grytan. 
-fritera bajset och avnjut med sm�lt choklad
-BAJS!! HIHIHIHIHIHihihihihihihihihiiii</content>
-    <ingredients>k�tt;gryta;bajs;korv;peppar;choklad</ingredients>
+    <title>pannekaga</title>
+    <content>mixa stek svälj</content>
+    <ingredients>panne;kaga</ingredients>
   </recipe>
 </recipes>

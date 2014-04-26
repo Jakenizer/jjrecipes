@@ -13,6 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ListRecipes extends AbstractPanel {
 
 	/**
@@ -21,10 +24,11 @@ public class ListRecipes extends AbstractPanel {
 	private static final long serialVersionUID = 1L;
 	private JList<String> leftList;
 	private DefaultListModel<String> listModel;
-
+	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
+	
 	public ListRecipes(JTabbedPane parent) throws FileNotFoundException {
 		super(parent);
-		
+				
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel mainPanel = new JPanel();

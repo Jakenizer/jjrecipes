@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +99,34 @@ public class GUI extends JFrame{
 		return components.get(name);
 	}
 	
+	/**
+	 * For logging
+	 */
+	protected void setupRollingfileAppender() {
+		org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
+		
+		//Define log pattern layout
+		PatternLayout layout = new PatternLayout("%d{ABSOLUTE} %-5p [%c{1}] %m%n"); 
+		//("%d{ISO8601} [%t] %-5p %c %x - %m%n");
+		
+		try
+		{
+		//Define file appender with layout and output log file name
+		String s = System.getProperty("user.dir") + "/jjrecipes.log";
+		RollingFileAppender fileAppender = new RollingFileAppender(layout, s);
+		fileAppender.setMaxFileSize("100KB");
+		fileAppender.setThreshold(Level.DEBUG);
+		fileAppender.setAppend(true);
+		//Add the appender to root logger
+		rootLogger.addAppender(fileAppender);
+		}
+		catch (IOException e)
+		{
+			
+		}
+		log.info("Rollingfileappender added");
+	}
+	
 	public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(
@@ -104,7 +136,7 @@ public class GUI extends JFrame{
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }
-		new GUI();
+		GUI gui = new GUI();
+		gui.setupRollingfileAppender();
 	}
 }
-

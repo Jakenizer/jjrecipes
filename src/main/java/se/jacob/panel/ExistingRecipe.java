@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.jacob.exception.SaveFileException;
+import se.jacob.exception.SearchFileException;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
@@ -57,7 +58,7 @@ public class ExistingRecipe extends CommonRecipeView {
 				
 				try {
 					FileHandler.persist(obj);
-				} catch (SaveFileException ex) {
+				} catch (SaveFileException | SearchFileException ex) {
 					LOG.error(ex.getMessage());
 					JOptionPane.showMessageDialog(parent, "Could not save file", "File saving error", ERROR);
 				}

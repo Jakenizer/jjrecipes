@@ -95,7 +95,6 @@ public abstract class AbstractPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				parent.remove(that);
-				//FileHandler.saveToFile("leif", "det var en gång liten pojk som hette leif och han var smart.");
 			}
 		};
 		btnClose.addActionListener(listener);

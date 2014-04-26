@@ -11,13 +11,13 @@ import javax.swing.JTabbedPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.jacob.exception.SearchFileException;
 import se.jacob.gui.GUI;
 import se.jacob.panel.ExistingRecipe;
 import se.jacob.panel.ListRecipes;
 import se.jacob.panel.NewRecipe;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
-import se.jacob.xml.SearchTool;
 
 public class MainMenuListener implements ActionListener {
 	
@@ -35,7 +35,7 @@ public class MainMenuListener implements ActionListener {
 			case "Quit": {
 				System.exit(0);
 			}
-			case "New Recipe": {
+			case "New Recipe": { 
 				JTabbedPane tabbedPane = (JTabbedPane) GUI.getComponent("TabbedPane");
 				NewRecipe recipeView = null;
 				try {
@@ -45,12 +45,18 @@ public class MainMenuListener implements ActionListener {
 				} catch (FileNotFoundException e1) {
 					break;
 				}				
-			
+
 				break;
 			}
 			
 			case "Open Recipe": {
-				RecipeObject obj = FileHandler.searchForRecipe(parent);
+				RecipeObject obj = null;
+				try {
+					obj = FileHandler.searchForRecipe(parent);
+				} catch (SearchFileException e2) {
+					log.error(e2.getMessage());
+					break;
+				}
 				if (obj == null) {
 					JOptionPane.showMessageDialog(parent, "Recipe does not exist");
 					break;
@@ -82,6 +88,7 @@ public class MainMenuListener implements ActionListener {
 			}
 			
 			case "Validate: Unique XML ids" : {
+				log.warn("validation not implemented");
 				/*try {
 					boolean isOk = SearchTool.validateUniqueIds();
 					if (!isOk) {

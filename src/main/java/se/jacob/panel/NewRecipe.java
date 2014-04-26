@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.jacob.exception.SaveFileException;
+import se.jacob.exception.SearchFileException;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
@@ -34,6 +36,7 @@ public class NewRecipe extends CommonRecipeView {
 	
 	@Override
 	protected ActionListener getSaveActionListener() {
+		final JComponent that = this;
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -51,7 +54,8 @@ public class NewRecipe extends CommonRecipeView {
 				
 				try {
 					FileHandler.persist(obj);
-				} catch (SaveFileException ex) {
+					parent.remove(that);
+				} catch (SaveFileException | SearchFileException ex) {
 					LOG.error(ex.getMessage());
 					JOptionPane.showMessageDialog(parent, "Could not save file", "File saving error", ERROR);
 				}

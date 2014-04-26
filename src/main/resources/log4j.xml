@@ -2,14 +2,17 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
+
+	<!-- LEVELS: TRACE, DEBUG, INFO, WARN, ERROR and FATAL-->
+
 	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
-		 <param name="Threshold" value="WARN" />
+		 <param name="Threshold" value="DEBUG" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
 	</appender>
 
-	<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
+	<!--appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
       <param name="MaxFileSize" value="100KB" />
       <param name="Threshold" value="DEBUG" />
       <param name="append" value="true"/>
@@ -17,12 +20,12 @@
       <layout class="org.apache.log4j.PatternLayout">
          <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
       </layout>
-   </appender>
+   </appender-->
 	
 	
 	<root>
 		<level value="DEBUG" />
 		<appender-ref ref="consoleAppender" />
-		<appender-ref ref="fileAppender" />
+		<!--appender-ref ref="fileAppender" /-->
 	</root>
 </log4j:configuration>

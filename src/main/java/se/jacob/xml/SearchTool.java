@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.xml.sax.SAXException;
 
 import se.jacob.Constants;
+import se.jacob.exception.SearchFileException;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -28,8 +29,9 @@ public class SearchTool {
 	/**
 	 * 
 	 * @return the next ID to use as increment in the xml.
+	 * @throws SearchFileException 
 	 */
-	public static Integer getNextId() {
+	public static Integer getNextId() throws SearchFileException {
 		Integer intRes = 1;
 		NodeList nodeList = searchForMultipleNodes("//@id[not(. < //@id)]"); //högsta idvärdet
 		if (nodeList != null && nodeList.getLength() != 0) {
@@ -39,7 +41,7 @@ public class SearchTool {
 		return intRes;
 	}
 	
-	public static boolean idExists(Integer id) {
+	public static boolean idExists(Integer id) throws SearchFileException {
 		Node node = searchForSingleNodeById(id.toString());
 		return node == null ? false : true;
 	}
@@ -48,8 +50,9 @@ public class SearchTool {
 	 * Dude, use this function in others to search.
 	 * @param expression
 	 * @return nodeList A list of resulting nodes
+	 * @throws SearchFileException 
 	 */
-	private static NodeList searchForMultipleNodes(String expression) {
+	private static NodeList searchForMultipleNodes(String expression) throws SearchFileException {
 		DocumentBuilder builder;
 		Document document;
 		NodeList nodeList = null;
@@ -60,8 +63,7 @@ public class SearchTool {
 		try {
 		    builder = builderFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-		    e.printStackTrace();
-		    return null;
+		    throw new SearchFileException("", e);
 		}
 		
 		try {
@@ -85,7 +87,7 @@ public class SearchTool {
 	}
 	
 	
-	public static Node searchForSingleNodeById(String id) {
+	public static Node searchForSingleNodeById(String id) throws SearchFileException {
 		DocumentBuilder builder;
 		Document document;
 		Node node = null;
@@ -96,16 +98,14 @@ public class SearchTool {
 		try {
 		    builder = builderFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-		    e.printStackTrace();
-		    return null;
+		    throw new SearchFileException("Exception while creating DocumentBuilder", e);
 		}
 		
 		try {
 		    document = builder.parse(
 		            new FileInputStream(Constants.XML_PATH));
 		} catch (SAXException | IOException e) {
-		    e.printStackTrace();
-		    return null;
+		    throw new SearchFileException("Exception while parsing xml save file", e);
 		}
 		
 		XPath xPath =  XPathFactory.newInstance().newXPath();
@@ -114,8 +114,7 @@ public class SearchTool {
 		try {
 			node = (Node) xPath.compile(expression).evaluate(document, XPathConstants.NODE);
 		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-			return null;
+			throw new SearchFileException("Exception when compiling xpath expression or evaluating document", e);
 		}
 		
 		return node;
@@ -125,8 +124,9 @@ public class SearchTool {
 	 * Possible to search by parts of the title
 	 * @param title
 	 * @return
+	 * @throws SearchFileException 
 	 */
-	public static NodeList searchForNodesByTitle(String title) {
+	public static NodeList searchForNodesByTitle(String title) throws SearchFileException {
 		DocumentBuilder builder;
 		Document document;
 		NodeList nodeList = null;
@@ -140,15 +140,14 @@ public class SearchTool {
 		try {
 		    builder = builderFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-		    e.printStackTrace();
-		    return null;
+		    throw new SearchFileException("Exception while creating DocumentBuilder", e);
 		}
 		
 		try {
 		    document = builder.parse(
 		            new FileInputStream(Constants.XML_PATH));
 		} catch (SAXException | IOException e) {
-		    return null;
+		    throw new SearchFileException("Exception while parsing xml save file", e);
 		}
 		
 		XPath xPath =  XPathFactory.newInstance().newXPath();
@@ -158,7 +157,7 @@ public class SearchTool {
 		try {
 			nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+			throw new SearchFileException("Exception when compiling xpath expression or evaluating document", e);
 		}
 		
 		return nodeList;	
@@ -177,7 +176,7 @@ public class SearchTool {
 		    builder = builderFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
 		    e.printStackTrace();
-		    throw new Exception("det blev del");
+		    throw new Exception("det blev fel");
 		}
 		
 		try {

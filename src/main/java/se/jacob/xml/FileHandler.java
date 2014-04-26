@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 
 import se.jacob.Constants;
 import se.jacob.exception.SaveFileException;
+import se.jacob.exception.SearchFileException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -37,7 +38,7 @@ public class FileHandler {
 	
 	private static Logger log = LoggerFactory.getLogger(FileHandler.class.getName());
 
-	public static boolean saveNewRecipeToFile(RecipeObject obj) throws SaveFileException {
+	public static boolean saveNewRecipeToFile(RecipeObject obj) throws SaveFileException, SearchFileException {
 		File f = new File(Constants.XML_PATH);
 		if(!f.exists()){
 			createNewEmptyFile();
@@ -63,7 +64,7 @@ public class FileHandler {
 		}
 	}
 
-	private static boolean addRecipe(RecipeObject obj) {
+	private static boolean addRecipe(RecipeObject obj) throws SearchFileException {
 		boolean success = true;
 		
 		SAXBuilder saxBuilder = new SAXBuilder();
@@ -115,7 +116,13 @@ public class FileHandler {
 		return success;
 	}
 	
-	public static RecipeObject searchForRecipe(JFrame parent) {
+	/**
+	 * Gets search string input from a popup dialog that is used to find a recipe
+	 * @param parent is used for placing the dialog correctly
+	 * @return single recipe or null if none is found
+	 * @throws SearchFileException
+	 */
+	public static RecipeObject searchForRecipe(JFrame parent) throws SearchFileException {
 		String queryString = (String)JOptionPane.showInputDialog(
                 parent,
                 "The full title or parts of the full title",
@@ -128,11 +135,11 @@ public class FileHandler {
 		
 			if (queryString == null || queryString.length() == 0) {
 				log.warn("Search string must be at least one letter long");
-				return null;
+				throw new SearchFileException("Search string must be at least one letter long", new IllegalArgumentException());
 			}
 			
 			NodeList recipeList = SearchTool.searchForNodesByTitle(queryString);
-			if (recipeList == null) {
+			if (recipeList == null || recipeList.getLength() == 0) {
 				log.warn("No recipe with title containing '{}' found", queryString);
 				return null;
 			}
@@ -181,7 +188,7 @@ public class FileHandler {
 			return new RecipeObject(new Integer(idAttribute), t, content, ingredients);
 	}
 	
-	public static boolean persist(RecipeObject obj) throws SaveFileException {
+	public static boolean persist(RecipeObject obj) throws SaveFileException, SearchFileException {
 		Integer id = obj.getId();
 		if (id == null) {
 			saveNewRecipeToFile(obj);
@@ -192,7 +199,7 @@ public class FileHandler {
 		return false;
 	}
 	
-	private static boolean updateExistingRecipe(RecipeObject obj) {
+	private static boolean updateExistingRecipe(RecipeObject obj) throws SearchFileException {
 		boolean success = true;
 		
 		Node recipe = SearchTool.searchForSingleNodeById(obj.getId().toString());
