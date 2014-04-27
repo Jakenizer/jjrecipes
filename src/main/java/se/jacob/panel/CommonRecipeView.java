@@ -34,7 +34,6 @@ public abstract class CommonRecipeView extends AbstractPanel{
 	protected final JButton removeIngredientButton;
 	protected final DefaultListModel<String> listModel;
 	protected final JList<String> ingredientList;
-//	protected RecipeObject object;
 
 	public CommonRecipeView(JTabbedPane parent) throws FileNotFoundException {
 		super(parent);

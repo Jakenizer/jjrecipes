@@ -82,9 +82,10 @@ public class MainMenuListener implements ActionListener {
 				try {
 					ListRecipes listView = new ListRecipes(tabbedPane);
 					listView.addClosableTab();
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
+				} catch (FileNotFoundException | SearchFileException e1) {
+					log.error("Error in when populating list in  List Recipes");
 				}
+				break;
 			}
 			
 			case "Validate: Unique XML ids" : {

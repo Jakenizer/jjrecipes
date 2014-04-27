@@ -12,6 +12,8 @@ import org.w3c.dom.NodeList;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+
 import org.xml.sax.SAXException;
 
 import se.jacob.Constants;
@@ -203,6 +205,41 @@ public class SearchTool {
 			System.out.println(n.getTextContent());
 		}*/
 	}
+	
+	public static NodeList getAllRecipes() throws SearchFileException {
+		DocumentBuilder builder;
+		Document document;
+		NodeList nodeList = null;
+		
+		DocumentBuilderFactory builderFactory =
+		        DocumentBuilderFactory.newInstance();
+		
+		try {
+		    builder = builderFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+		    throw new SearchFileException("Exception while creating DocumentBuilder", e);
+		}
+		
+		try {
+		    document = builder.parse(
+		            new FileInputStream(Constants.XML_PATH));
+		} catch (SAXException | IOException e) {
+		    throw new SearchFileException("Exception while parsing xml save file", e);
+		}
+		
+		XPath xPath =  XPathFactory.newInstance().newXPath();
+		
+		String expression = "/recipes/recipe";
+		
+		try {
+			nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			throw new SearchFileException("Exception when compiling xpath expression or evaluating document", e);
+		}
+		
+		return nodeList;	
+	}
+	
 	
 	public static void resolveDuplicatesInXML() throws Exception {
 		NodeList list = getDuplicateNodes();

@@ -199,7 +199,7 @@ public class FileHandler {
 		return false;
 	}
 	
-	private static boolean updateExistingRecipe(RecipeObject obj) throws SearchFileException {
+	private static boolean updateExistingRecipe(RecipeObject obj) throws SaveFileException, SearchFileException {
 		boolean success = true;
 		
 		Node recipe = SearchTool.searchForSingleNodeById(obj.getId().toString());
@@ -223,8 +223,12 @@ public class FileHandler {
 		    xformer.transform
 		        (new DOMSource(recipe.getOwnerDocument()), new StreamResult(new File(Constants.XML_PATH)));
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			throw new SaveFileException("Exception when updating recipe: " + obj.getTitle(), e);
 		}
 		return success;
+	}
+	
+	public static NodeList getAllRecipes() throws SearchFileException {
+		return SearchTool.getAllRecipes();
 	}
 }
