@@ -228,7 +228,33 @@ public class FileHandler {
 		return success;
 	}
 	
-	public static NodeList getAllRecipes() throws SearchFileException {
-		return SearchTool.getAllRecipes();
+	public static List<RecipeObject> getAllRecipes() throws SearchFileException {
+		List<RecipeObject> roList = new ArrayList<RecipeObject>();
+		NodeList nl = SearchTool.getAllRecipes();
+		for (int i = 0; i < nl.getLength(); i++) {
+			Node n = nl.item(i);
+			RecipeObject obj = nodeObjectToRecipeObject(n);
+			roList.add(obj);
+		}
+		
+		return roList;
+	}
+	
+	public static RecipeObject nodeObjectToRecipeObject(Node n) {
+		if (n == null) {
+			return null;
+		}
+		String t = n.getChildNodes().item(1).getTextContent();
+		String content = n.getChildNodes().item(3).getTextContent();
+		
+		String ingredientString = n.getChildNodes().item(5).getTextContent();
+		String[] ingredientArray = ingredientString.split(";");
+		List<String> ingredients = new ArrayList<String>();
+		for (String ingredient : ingredientArray) {
+			ingredients.add(ingredient);
+		}	
+		String idAttribute = n.getAttributes().item(0).getTextContent();
+
+		return new RecipeObject(new Integer(idAttribute), t, content, ingredients);
 	}
 }

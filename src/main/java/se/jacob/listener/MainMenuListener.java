@@ -27,7 +27,7 @@ public class MainMenuListener implements ActionListener {
 	public MainMenuListener(JFrame parent) {
 		this.parent = parent;
 	}
-
+	//TODO: open the views with factories instead!
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
