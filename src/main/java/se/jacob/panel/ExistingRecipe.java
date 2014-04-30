@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +26,7 @@ public class ExistingRecipe extends CommonRecipeView {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonRecipeView.class);
 	private RecipeObject obj;
 	
-	public ExistingRecipe(JTabbedPane parent, RecipeObject obj) throws FileNotFoundException {
-		super(parent);
+	public ExistingRecipe(RecipeObject obj) throws FileNotFoundException {
 		this.obj = obj;
 		String contentString = obj.getContent();
 		recipeText.setText(contentString);
@@ -70,5 +68,4 @@ public class ExistingRecipe extends CommonRecipeView {
 	public String getTitle() {
 		return obj.getTitle();
 	}
-
 }

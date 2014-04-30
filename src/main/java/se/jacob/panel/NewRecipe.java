@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +23,8 @@ public class NewRecipe extends CommonRecipeView {
 	private static final long serialVersionUID = 1L;	
 	private static final Logger LOG = LoggerFactory.getLogger(NewRecipe.class);
 
-	public NewRecipe(JTabbedPane parent) throws FileNotFoundException {
-		super(parent);
-		
+	public NewRecipe() throws FileNotFoundException {
+		super();
 	}
 	
 	@Override

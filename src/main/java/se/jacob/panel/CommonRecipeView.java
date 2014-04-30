@@ -14,13 +14,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 
-public abstract class CommonRecipeView extends AbstractPanel{
+public abstract class CommonRecipeView extends AbstractView{
 
 	private static final long serialVersionUID = 1L;
 	protected final JLabel nameLabel;
@@ -35,8 +34,7 @@ public abstract class CommonRecipeView extends AbstractPanel{
 	protected final DefaultListModel<String> listModel;
 	protected final JList<String> ingredientList;
 
-	public CommonRecipeView(JTabbedPane parent) throws FileNotFoundException {
-		super(parent);
+	public CommonRecipeView() throws FileNotFoundException {
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel mainPanel = new JPanel();

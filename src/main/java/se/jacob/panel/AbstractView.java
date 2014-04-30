@@ -19,20 +19,23 @@ import javax.swing.JTabbedPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.jacob.gui.GUI;
+
 import com.jgoodies.looks.common.RGBGrayFilter;
 
-public abstract class AbstractPanel extends JPanel {
+public abstract class AbstractView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	protected JTabbedPane parent;
 	private Icon CLOSE_TAB_ICON;
 	private Logger log = LoggerFactory.getLogger(getClass());
 	protected JLabel lblTitle;
+	protected final JTabbedPane parent;
 	
 //	protected String theTitle;
 	
-	public AbstractPanel(JTabbedPane parent) throws FileNotFoundException {
-		this.parent = parent;
+	public AbstractView() throws FileNotFoundException {
+		this.parent = (JTabbedPane) GUI.getComponent("TabbedPane");
+
 		setBackground(Color.LIGHT_GRAY);
 		URL url = getClass().getResource("/closeTabButton.png");
 		//CLOSE_TAB_ICON = new ImageIcon(getClass().getResource("/closeTabButton.png"));

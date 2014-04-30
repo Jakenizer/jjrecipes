@@ -5,11 +5,6 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import se.jacob.xml.RecipeObject;
 
@@ -32,7 +27,6 @@ public class PaginatedList extends JList<String> {
 		setSelectedIndex(0);
 		setVisibleRowCount(rows);
 		setModel(model);
-		//addListener();
 		updatePage();	
 	}
 	
@@ -59,25 +53,17 @@ public class PaginatedList extends JList<String> {
 	}
 	
 	public void lastPage() {
-		Double inflatedNumber = (double) (objectList.size() / rows);
-		int deflatedNumber = inflatedNumber.intValue();
-		startIndex = rows * (deflatedNumber-1);
+//		Double inflatedNumber = (double) (objectList.size() / rows);
+//		int deflatedNumber = inflatedNumber.intValue();
+//		startIndex = rows * (deflatedNumber-1);
+		int mod = objectList.size() % rows;
+		if (mod == 0) {
+			startIndex = objectList.size() - rows;
+		} else {
+			startIndex = objectList.size() - mod;
+		}
 		updatePage();
 	}
-	
-	/*private void addListener() {
-		getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				int itemIndex = getStartIndex() + getSelectedIndex();
-				Node item = list.item(itemIndex);
-				String idAttribute = item.getAttributes().item(0).getTextContent();
-				String title = item.getChildNodes().item(1).getTextContent();
-				System.out.println(idAttribute + ": " + title);
-			}
-		});
-	}*/
 	
 	/**
 	 * Get the selected Recipe Object

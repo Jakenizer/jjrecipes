@@ -17,7 +17,9 @@ import org.w3c.dom.NodeList;
 import se.jacob.Constants;
 import se.jacob.exception.SaveFileException;
 import se.jacob.exception.SearchFileException;
+import se.jacob.xml.FileHandler.SearchResult.ResultCode;
 
+import java.awt.Container;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -122,7 +123,7 @@ public class FileHandler {
 	 * @return single recipe or null if none is found
 	 * @throws SearchFileException
 	 */
-	public static RecipeObject searchForRecipe(JFrame parent) throws SearchFileException {
+	public static SearchResult searchForRecipe(Container parent) throws SearchFileException {
 		String queryString = (String)JOptionPane.showInputDialog(
                 parent,
                 "The full title or parts of the full title",
@@ -133,15 +134,18 @@ public class FileHandler {
                 ""
             );
 		
-			if (queryString == null || queryString.length() == 0) {
-				log.warn("Search string must be at least one letter long");
-				throw new SearchFileException("Search string must be at least one letter long", new IllegalArgumentException());
+			if (queryString == null) {
+				return new SearchResult(null, ResultCode.CANCELLED_SEARCH);
+			}
+					
+			if (queryString.length() == 0) {
+				return new SearchResult(null, ResultCode.EMPTY_SEARCH_STRING);
+				//throw new SearchFileException("Search string must be at least one letter long", new IllegalArgumentException());
 			}
 			
 			NodeList recipeList = SearchTool.searchForNodesByTitle(queryString);
 			if (recipeList == null || recipeList.getLength() == 0) {
-				log.warn("No recipe with title containing '{}' found", queryString);
-				return null;
+				return new SearchResult(null, ResultCode.NO_MATCH, queryString);
 			}
 			
 			String idAttribute = null;
@@ -169,11 +173,14 @@ public class FileHandler {
 					recipes.toArray(),
 					""
 	             );
+				if (result == null) {
+					return new SearchResult(null, ResultCode.CANCELLED_SELECTION);
+				}
 				idAttribute = result.split(": ")[0].trim();
 			}
 			Node recipe = SearchTool.searchForSingleNodeById(idAttribute);
 			if (recipe == null) {
-				return null;
+				return new SearchResult(null, ResultCode.UNEXPECTED_ERROR);
 			}
 			String t = recipe.getChildNodes().item(1).getTextContent();
 			String content = recipe.getChildNodes().item(3).getTextContent();
@@ -185,7 +192,7 @@ public class FileHandler {
 				ingredients.add(ingredient);
 			}	
 			
-			return new RecipeObject(new Integer(idAttribute), t, content, ingredients);
+			return new SearchResult(new RecipeObject(new Integer(idAttribute), t, content, ingredients), ResultCode.SUCCESS);
 	}
 	
 	public static boolean persist(RecipeObject obj) throws SaveFileException, SearchFileException {
@@ -256,5 +263,50 @@ public class FileHandler {
 		String idAttribute = n.getAttributes().item(0).getTextContent();
 
 		return new RecipeObject(new Integer(idAttribute), t, content, ingredients);
+	}
+	
+	public static class SearchResult{
+		private RecipeObject o;
+		private ResultCode c;
+		private String s;
+		
+		public SearchResult(RecipeObject o, ResultCode c) {
+			this.o = o;
+			this.c = c;
+		}
+		
+		public SearchResult(RecipeObject o, ResultCode c, String searchString) {
+			this(o, c);
+			this.s = searchString;
+		}
+		
+		public RecipeObject getRecipeObject() {
+			return o;
+		}
+
+		public ResultCode getResultCode() {
+			return c;
+		}
+
+		public String getSearchString() {
+			return s;
+		}
+
+		public enum ResultCode {
+			SUCCESS("Search result found"), EMPTY_SEARCH_STRING("Search string is empty"), 
+				CANCELLED_SEARCH("Search was cancelled"), CANCELLED_SELECTION("recipe selection was cancelled"), 
+					NO_MATCH("No recipe containing the search string found"),
+						UNEXPECTED_ERROR("Un unexpected error has occurred");
+			
+	        private String value;
+
+	        ResultCode(String value) {
+	            this.value = value;
+	        }
+	        
+	        public String getValue() {
+	        	return value;
+	        }
+		}
 	}
 }

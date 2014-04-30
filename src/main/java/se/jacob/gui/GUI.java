@@ -1,6 +1,7 @@
 package se.jacob.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -31,10 +32,14 @@ public class GUI extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
 	private static Map<String, JComponent> components = new HashMap<>();
-	private static Logger log = LoggerFactory.getLogger(GUI.class.getName());
+	private static Logger log = LoggerFactory.getLogger(GUI.class);
+	
+	private static Container mainFrame;
 	 
 	public GUI() {
 		DOMConfigurator.configure("src/main/resources/log4j.xml");
+		
+		mainFrame = this.getContentPane();
 		
 		setTitle("JJ Recipes " + Constants.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,7 +52,7 @@ public class GUI extends JFrame{
 		JMenuItem newRecipeItem = new JMenuItem("New Recipe");
 		JMenuItem listRecipesItem = new JMenuItem("List Recipes");
 		//JMenuItem searchRecipesItem = new JMenuItem("Search Recipes");
-		JMenuItem openRecipesItem = new JMenuItem("Open Recipe");
+		JMenuItem openRecipesItem = new JMenuItem("Search Recipe");
 		JMenuItem quitItem = new JMenuItem("Quit");
 		
 		fileMenu.add(newRecipeItem);
@@ -60,7 +65,7 @@ public class GUI extends JFrame{
 		JMenuItem validateXMLIds = new JMenuItem("Validate: Unique XML ids");
 		advancedMenu.add(validateXMLIds);
 
-		MainMenuListener mainListener = new MainMenuListener(this);
+		MainMenuListener mainListener = new MainMenuListener();
 		newRecipeItem.addActionListener(mainListener);
 		listRecipesItem.addActionListener(mainListener);
 		openRecipesItem.addActionListener(mainListener);
@@ -83,6 +88,7 @@ public class GUI extends JFrame{
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		
 		add(tabbedPane, BorderLayout.CENTER);
+		
 		registerComponent("TabbedPane", tabbedPane);
 		setVisible(true);
 	}
@@ -125,6 +131,10 @@ public class GUI extends JFrame{
 			
 		}
 		log.info("Rollingfileappender added");
+	}
+	
+	public static Container getMainFrame() {
+		return mainFrame;
 	}
 	
 	public static void main(String[] args) {

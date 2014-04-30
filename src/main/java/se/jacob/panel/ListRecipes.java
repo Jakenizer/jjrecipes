@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -13,27 +15,21 @@ import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.NodeList;
 
 import se.jacob.exception.SearchFileException;
+import se.jacob.panel.ViewFactory.Views;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
-public class ListRecipes extends AbstractPanel {
+public class ListRecipes extends AbstractView {
 
 	private static final long serialVersionUID = 1L;
 	private final int LIST_WIDTH = 600; 
-	private final int LIST_LENGTH = 7;
+	private final int LIST_LENGTH = 17;
 	private final PaginatedList contentList;
 	private DefaultListModel<String> listModel;
 	private JPanel buttonPanel;
@@ -45,8 +41,7 @@ public class ListRecipes extends AbstractPanel {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
 	
-	public ListRecipes(final JTabbedPane parent) throws FileNotFoundException, SearchFileException {
-		super(parent);
+	public ListRecipes() throws FileNotFoundException, SearchFileException {
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel mainPanel = new JPanel();
@@ -103,13 +98,14 @@ public class ListRecipes extends AbstractPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RecipeObject selectedItem = contentList.getSelectedDataItem();
-				//TODO: Öppna Existing Recipe
+				//Öppna Existing Recipe
 				if (selectedItem != null) {
-					System.out.println(selectedItem.getTitle());
-					
-					
-					
-					parent.remove(that);
+					ExistingRecipe view = (ExistingRecipe) ViewFactory.getView(Views.OPEN_RECIPE, selectedItem);
+					if (view != null) {
+						view.addClosableTab();
+						parent.remove(that);
+						LOG.info("Recipe with ID: {} and title: {} opened", selectedItem.getId(), selectedItem.getTitle());				
+					}
 				}
 			}
 		}); 
@@ -119,9 +115,6 @@ public class ListRecipes extends AbstractPanel {
 		buttonPanel.add(nextButton);
 		buttonPanel.add(toLastButton);
 		buttonPanel.add(selectButton);
-		
-        //JScrollPane listScrollPane = new JScrollPane(leftList);
-		//listScrollPane.setPreferredSize(new Dimension(400, 450));
 		
 		GroupLayout layout = new GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
@@ -147,7 +140,7 @@ public class ListRecipes extends AbstractPanel {
                         GroupLayout.PREFERRED_SIZE)
              )
         );
-
+		contentList.addKeyListener(new ArrowKeyListener());
 		mainPanel.setBackground(Color.LIGHT_GRAY);
 		add(mainPanel);	
 	}
@@ -155,5 +148,23 @@ public class ListRecipes extends AbstractPanel {
 	@Override
 	public String getTitle() {
 		return "Recipe List";
+	}
+	
+	private class ArrowKeyListener extends KeyAdapter {
+		
+		@Override
+		public void keyReleased(KeyEvent e) {
+			int keyCode = e.getKeyCode();
+		    switch( keyCode ) { 
+		        case KeyEvent.VK_LEFT: {
+		        	previousButton.doClick();		            
+		        	break;
+		        }
+		        case KeyEvent.VK_RIGHT : {
+		        	nextButton.doClick();
+		        	break;
+		        }
+		     }
+		}
 	}
 }
