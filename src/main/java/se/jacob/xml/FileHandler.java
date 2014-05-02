@@ -37,7 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 
 public class FileHandler {
 	
-	private static Logger log = LoggerFactory.getLogger(FileHandler.class.getName());
+	private static Logger LOG = LoggerFactory.getLogger(FileHandler.class.getName());
 
 	public static boolean saveNewRecipeToFile(RecipeObject obj) throws SaveFileException, SearchFileException {
 		File f = new File(Constants.XML_PATH);
@@ -75,7 +75,8 @@ public class FileHandler {
 			Document document = saxBuilder.build(xmlFile);
 			Element rootElement = document.getRootElement();
 			Element recipeElement = new Element("recipe");
-			recipeElement.setAttribute(new Attribute("id", SearchTool.getNextId().toString()));
+			String newId = SearchTool.getNextId().toString();
+			recipeElement.setAttribute(new Attribute("id", newId));
 			Element titleElement = new Element("title");
 			Element contentElement = new Element("content");
 			Element ingredientsElement = new Element("ingredients");
@@ -103,16 +104,11 @@ public class FileHandler {
 			XMLOutputter xmlOutput = new XMLOutputter();
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			xmlOutput.output(document, new FileWriter(Constants.XML_PATH));
+			LOG.info("A new recipe with ID: " + obj.getId() + "and title: " + obj.getTitle() + " saved to file");
 		} catch (IOException | JDOMException ex) {
 			success = false;
+			LOG.error("Could not add recipe to save file 'recipes.xml'.\n" + ex.getMessage());
 		} 
-		
-		if(success) {
-			log.info("New recipes added to save file 'recipes.xml'");
-		}
-		else {
-			log.error("Could not add recipe to save file 'recipes.xml'");
-		}
 		
 		return success;
 	}
@@ -226,9 +222,9 @@ public class FileHandler {
 		}
 		recipe.getChildNodes().item(5).setTextContent(sb.toString());
 		try{
-		Transformer xformer = TransformerFactory.newInstance().newTransformer();
-		    xformer.transform
-		        (new DOMSource(recipe.getOwnerDocument()), new StreamResult(new File(Constants.XML_PATH)));
+			Transformer xformer = TransformerFactory.newInstance().newTransformer();
+				xformer.transform
+					(new DOMSource(recipe.getOwnerDocument()), new StreamResult(new File(Constants.XML_PATH)));
 		} catch (TransformerException e) {
 			throw new SaveFileException("Exception when updating recipe: " + obj.getTitle(), e);
 		}

@@ -1,17 +1,17 @@
 package se.jacob.panel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -22,7 +22,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,7 @@ public class ListRecipes extends AbstractView {
 	private JButton previousButton;
 	private JButton toLastButton;
 	private JButton selectButton;
+	private final JPanel recipePreview;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
 	
@@ -67,6 +73,7 @@ public class ListRecipes extends AbstractView {
 		contentList = new PaginatedList(listModel, listData, LIST_LENGTH);
 		contentList.setPreferredSize(new Dimension(LIST_WIDTH, 340));
 		contentList.addRangeSubscriber(rangeDisplay);
+
 		
 		buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		buttonPanel.setBackground(Color.LIGHT_GRAY);
@@ -110,7 +117,7 @@ public class ListRecipes extends AbstractView {
 		});
 		
 		final JComponent that = this;
-		selectButton = new JButton(new AbstractAction("Select Recipe") {
+		selectButton = new JButton(new AbstractAction("Edit Recipe") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -126,6 +133,13 @@ public class ListRecipes extends AbstractView {
 				}
 			}
 		}); 
+		contentList.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == 10) {
+					selectButton.doClick();
+				}
+			}
+		});
 		
 		buttonPanel.add(toFirstButton);
 		buttonPanel.add(previousButton);
@@ -139,7 +153,7 @@ public class ListRecipes extends AbstractView {
 		filler.setBackground(Color.LIGHT_GRAY);
 		
 		//right panel
-		JPanel recipePreview = setupPreviewPanel();
+		recipePreview = setupPreviewPanel();
 		contentList.setPreviewPanel(recipePreview);
 		
 		GroupLayout layout = new GroupLayout(mainPanel);
@@ -186,6 +200,7 @@ public class ListRecipes extends AbstractView {
              )
         );
 		contentList.addKeyListener(new ArrowKeyListener());
+		contentList.addListSelectionListener(new RecipelistListener());
 		mainPanel.setBackground(Color.LIGHT_GRAY);
 		add(mainPanel);	
 	}
@@ -196,66 +211,119 @@ public class ListRecipes extends AbstractView {
 	}
 	
 	private JPanel setupPreviewPanel() {
-		JPanel recipePreview = new JPanel();
+		JPanel recipePreview = new JPanel(new BorderLayout());
 		recipePreview.setPreferredSize(new Dimension(LIST_WIDTH, 340));
 		recipePreview.setBackground(new Color(230, 230, 230));
-		GroupLayout layout = new GroupLayout(recipePreview);
-		recipePreview.setLayout(layout);
-		recipePreview.setAlignmentX(LEFT_ALIGNMENT);
-		
 		
 		JLabel titleLabel = new JLabel();
-		titleLabel.setText("Title");
+		titleLabel.setName("titlelabel");
 		titleLabel.setFont(new Font("Verdana", Font.PLAIN, 20)); 
 		
 		JLabel ingredients = new JLabel();
+		ingredients.setName("ingredients");
 		ingredients.setHorizontalAlignment(SwingConstants.LEFT);
 		ingredients.setVerticalAlignment(SwingConstants.TOP);
-		ingredients.setFont(new Font("Verdana", Font.PLAIN, 12)); 
-		ingredients.setOpaque(true);
-		ingredients.setPreferredSize(new Dimension(100, 280));
-		ingredients.setText("<html>socker<br/>kanel<br/>kakao<br/>kött<br/>bacon</html>");
-		ingredients.setBackground(Color.WHITE);
+		ingredients.setFont(new Font("Verdana", Font.PLAIN, 12));
+		ingredients.setMinimumSize(new Dimension(50, 280));
 		
-		JLabel contentLabel = new JLabel();
-		contentLabel.setFont(new Font("Verdana", Font.PLAIN, 12)); 
-		contentLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		contentLabel.setVerticalAlignment(SwingConstants.TOP);
-		contentLabel.setPreferredSize(new Dimension(300, 280));
-		contentLabel.setOpaque(true);
-		contentLabel.setBackground(Color.WHITE);
-		contentLabel.setText("<html>There are two types of fonts: physical fonts and logical fonts. Physical fonts are the actual font libraries consisting of, for example, TrueType or PostScript Type 1 fonts. The physical fonts may be Time, Helvetica, Courier, or any number of other fonts, including international fonts.</html>");
+		JTextArea contentLabel = new JTextArea();
+		contentLabel.setName("contentlabel");
+		contentLabel.setLineWrap(true);
+		contentLabel.setWrapStyleWord(true);
+		contentLabel.setFont(new Font("Verdana", Font.PLAIN, 12));
+		contentLabel.setMinimumSize(new Dimension(100, 280));
+		contentLabel.setBackground(new Color(230, 230, 230));
+		contentLabel.setEditable(false);
+
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ingredients, contentLabel);
+	    splitPane.setDividerLocation(100);
 		
+		recipePreview.add(titleLabel, BorderLayout.NORTH);
+		recipePreview.add(splitPane, BorderLayout.CENTER);
 
-		layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING) 
-        		.addComponent(titleLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                .addComponent(ingredients, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                        GroupLayout.PREFERRED_SIZE)	
-             )
-             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING) 
-        		.addComponent(contentLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                        GroupLayout.PREFERRED_SIZE)	
-
-             )
-        );
-        layout.setVerticalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(titleLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                            GroupLayout.PREFERRED_SIZE)  
-                 )
-                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            		 .addComponent(ingredients, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-            				 GroupLayout.PREFERRED_SIZE)
-	                 .addComponent(contentLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-	                         GroupLayout.PREFERRED_SIZE)	
-                 )
-            );
-				
 		return recipePreview;
+	}
+	
+	/**
+	 * Fill the preview with info from the object in the left list
+	 * @author jacobflarup
+	 *
+	 */
+	private class RecipelistListener implements ListSelectionListener {
+		@Override
+		public void valueChanged(ListSelectionEvent e) {			
+			RecipeObject selected = contentList.getSelectedDataItem();
+			
+			if (recipePreview == null) {
+				LOG.error("recipeView is null");
+
+			}
+			if (selected == null) {
+				LOG.error("selected object is null");
+				return;
+			}
+			
+			String title = selected.getTitle();
+			String content = selected.getContent();
+			List<String> ingredients = selected.getIngredientList();
+			
+			Component[] comps = recipePreview.getComponents();
+			List<Component> compList = new ArrayList<Component>();
+ 			for (int i = 0; i < comps.length; i++) {
+ 				Component comp = comps[i];
+				if (comp instanceof JSplitPane) {
+					Component[] cp = ((JSplitPane) comp).getComponents();
+					for (int j = 0; j < cp.length; j++) {
+						if (cp[j] instanceof JLabel || cp[j] instanceof JTextArea)
+							compList.add(cp[j]);
+					}
+					
+				} else if (comp instanceof JLabel) {
+					compList.add(comp);
+				}
+			}
+			
+			
+			for (int i = 0; i < compList.size(); i++) {
+				Component comp = compList.get(i);	
+				switch (comp.getName()) {
+				case "titlelabel": {
+					JLabel label = (JLabel)comp;
+					label.setText(title);
+					break;
+				}
+				case "ingredients": {
+					StringBuilder sb = new StringBuilder();
+					sb.append("<html>");
+					for (int j = 0; j < ingredients.size(); j++) {
+						if (ingredients.size() > 17 && j == 16) {
+							sb.append("...");
+							break;
+						} else {
+							String ing = ingredients.get(j);
+							if (ing.length() > 13) {
+								ing = ing.substring(0, 13) + "..";
+							}
+							sb.append(ing);
+							sb.append("<br>");
+						}
+					}
+					sb.append("</html>");
+					JLabel area = (JLabel)comp;
+					area.setText(sb.toString());
+					break;
+				}
+				case "contentlabel": {
+					JTextArea label = (JTextArea)comp;
+					label.setText(content);
+					break;
+				}	
+				default:
+					LOG.error("Unknown or unhandled component in previewPanel");
+					break;
+				}
+			}
+		}
 	}
 	
 	private class ArrowKeyListener extends KeyAdapter {

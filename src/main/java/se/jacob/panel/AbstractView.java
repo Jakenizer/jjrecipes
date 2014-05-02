@@ -125,7 +125,7 @@ public abstract class AbstractView extends JPanel {
 			output = theTitle.substring(0, 13) + "..";
 			
 		lblTitle.setText(output);
-		lblTitle.setToolTipText(theTitle);
+		//lblTitle.setToolTipText(theTitle);
 	}
 	
 	

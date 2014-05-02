@@ -56,6 +56,7 @@ public class ExistingRecipe extends CommonRecipeView {
 				
 				try {
 					FileHandler.persist(obj);
+					LOG.info("Recipe with ID: " + obj.getId() + " and title: " + obj.getTitle() + " updated in save file");
 				} catch (SaveFileException | SearchFileException ex) {
 					LOG.error(ex.getMessage());
 					JOptionPane.showMessageDialog(parent, "Could not save file", "File saving error", ERROR);

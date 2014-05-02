@@ -5,6 +5,10 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
@@ -27,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import se.jacob.Constants;
 import se.jacob.listener.MainMenuListener;
+import se.jacob.playingaround.TestView;
 
 public class GUI extends JFrame{
 	
@@ -51,7 +57,6 @@ public class GUI extends JFrame{
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem newRecipeItem = new JMenuItem("New Recipe");
 		JMenuItem listRecipesItem = new JMenuItem("List Recipes");
-		//JMenuItem searchRecipesItem = new JMenuItem("Search Recipes");
 		JMenuItem openRecipesItem = new JMenuItem("Search Recipe");
 		JMenuItem quitItem = new JMenuItem("Quit");
 		
@@ -86,10 +91,9 @@ public class GUI extends JFrame{
 		
 		//tabbar
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		
 		add(tabbedPane, BorderLayout.CENTER);
-		
 		registerComponent("TabbedPane", tabbedPane);
+		
 		setVisible(true);
 	}
 	

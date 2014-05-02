@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import se.jacob.xml.RecipeObject;
 
-public class PaginatedList extends JList<String> implements ListSelectionListener {
+public class PaginatedList extends JList<String> {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
@@ -39,7 +39,6 @@ public class PaginatedList extends JList<String> implements ListSelectionListene
 		setSelectedIndex(0);
 		setVisibleRowCount(rows);
 		setModel(model);
-		addListSelectionListener(this);
 		updatePage();	
 	}
 	
@@ -49,6 +48,7 @@ public class PaginatedList extends JList<String> implements ListSelectionListene
 		}
 		startIndex += rows;
 		updatePage();
+		//setSelectedIndex(0);
 	}
 	
 	public void previousPage() {
@@ -126,48 +126,4 @@ public class PaginatedList extends JList<String> implements ListSelectionListene
 	public void setPreviewPanel(JPanel preview) {
 		this.previewPanel = preview;
 	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		//System.out.println(getSelectedIndex());
-		
-		RecipeObject selected = getSelectedDataItem();
-		
-		if (previewPanel == null || selected == null) {
-			LOG.error("Null value in preview panel or selection object");
-			return;
-		}
-		
-		String title = selected.getTitle();
-		String content = selected.getContent();
-		List<String> ingredients = selected.getIngredientList();
-		
-		
-		//System.out.println(getSelectedIndex());
-		//System.out.println(e.getLastIndex());
-		/*StringBuilder output = new StringBuilder();
-		int firstIndex = e.getFirstIndex();
-        int lastIndex = e.getLastIndex();
-        boolean isAdjusting = e.getValueIsAdjusting();
-        output.append("Event for indexes "
-                      + firstIndex + " - " + lastIndex
-                      + "; isAdjusting is " + isAdjusting
-                      + "; selected indexes:");
-
-        if (isSelectionEmpty()) {
-            output.append(" <none>");
-        } else {
-            // Find out which indexes are selected.
-            int minIndex = getMinSelectionIndex();
-            int maxIndex = getMaxSelectionIndex();
-            for (int i = minIndex; i <= maxIndex; i++) {
-                if (isSelectedIndex(i)) {
-                    output.append(" " + i);
-                }
-            }
-        }
-        System.out.println(output);*/
-	}
-	
-	
 }

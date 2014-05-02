@@ -2,9 +2,14 @@ package se.jacob.panel;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -14,9 +19,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+
+import se.jacob.gui.GUI;
+import se.jacob.util.FocusHandler;
 
 
 public abstract class CommonRecipeView extends AbstractView{
@@ -34,7 +44,7 @@ public abstract class CommonRecipeView extends AbstractView{
 	protected final DefaultListModel<String> listModel;
 	protected final JList<String> ingredientList;
 
-	public CommonRecipeView() throws FileNotFoundException {
+	public CommonRecipeView() throws FileNotFoundException {		
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel mainPanel = new JPanel();
@@ -50,17 +60,18 @@ public abstract class CommonRecipeView extends AbstractView{
 		recipeText.setWrapStyleWord( true );
 		recipeText.setPreferredSize(new Dimension(500, 300));
 		recipeText.setDocument(new TextAreaLimiter(200, 10, false));
+		FocusHandler.focusFixer(recipeText);
 		
 		ingredientLabel = new JLabel("New ingredient: ");
 		ingredientField = new JTextField();
 		ingredientField.setPreferredSize(new Dimension(250, 20));
 		ingredientField.setDocument(new TextFieldLimiter(30, false));
-		ingredientField.addActionListener(new ActionListener() {
+		/*ingredientField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addIngredientToList();
 			}
-		});
+		});*/
 		
 		//ingredienslistan		
 		listModel = new DefaultListModel<>();
@@ -72,27 +83,28 @@ public abstract class CommonRecipeView extends AbstractView{
 		listScrollPane.setPreferredSize(new Dimension(255, 200));
 		
 		ingredientButton = new JButton("Add");
-		ingredientButton.addActionListener(new ActionListener() {
+		/*ingredientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addIngredientToList();
 			}
-		});
+		});*/
 		
 		removeIngredientButton = new JButton("Remove");
-		removeIngredientButton.addActionListener(new ActionListener() {
+		/*removeIngredientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = ingredientList.getSelectedIndex();
 				if (selectedIndex >= 0) {
 					listModel.remove(selectedIndex);
-					//TODO: set the new selected index
+					if (!listModel.isEmpty())
+						ingredientList.setSelectedIndex(selectedIndex);
 				}
 			}
-		});
+		});*/
 		
 		saveButton = new JButton("Save");
-		saveButton.addActionListener(getSaveActionListener());
+		//saveButton.addActionListener(getSaveActionListener());
 		
 		
 		GroupLayout layout = new GroupLayout(mainPanel);
@@ -188,5 +200,4 @@ public abstract class CommonRecipeView extends AbstractView{
 			t = "";
 		nameField.setText(t);
 	}
-	
 }
