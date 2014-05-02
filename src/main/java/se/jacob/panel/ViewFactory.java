@@ -3,7 +3,6 @@ package se.jacob.panel;
 import java.io.FileNotFoundException;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

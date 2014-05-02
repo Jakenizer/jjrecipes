@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 
 import org.xml.sax.SAXException;
 

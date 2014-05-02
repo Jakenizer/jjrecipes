@@ -1,21 +1,32 @@
 package se.jacob.panel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.jacob.xml.RecipeObject;
 
-public class PaginatedList extends JList<String> {
+public class PaginatedList extends JList<String> implements ListSelectionListener {
 	
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
 	private List<RecipeObject> objectList;
 	private int rows;
 	private int startIndex = 0;
 	private DefaultListModel<String> model;
-		
+	private String range;
+	private List<PaginationLabel> rangeSubscribers = new ArrayList<PaginationLabel>(); //Jlabels that display visible the range of recipes 
+	private JPanel previewPanel;	
+	
 	public PaginatedList(DefaultListModel<String> model, List<RecipeObject> listData, int numRows) {
 		this.model = model;
 		this.objectList = listData;
@@ -23,10 +34,12 @@ public class PaginatedList extends JList<String> {
 			throw new IllegalArgumentException("list size and number of view rows must be at least 1");
 		
 		this.rows = numRows;
+		this.range = "";
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setSelectedIndex(0);
 		setVisibleRowCount(rows);
 		setModel(model);
+		addListSelectionListener(this);
 		updatePage();	
 	}
 	
@@ -53,9 +66,6 @@ public class PaginatedList extends JList<String> {
 	}
 	
 	public void lastPage() {
-//		Double inflatedNumber = (double) (objectList.size() / rows);
-//		int deflatedNumber = inflatedNumber.intValue();
-//		startIndex = rows * (deflatedNumber-1);
 		int mod = objectList.size() % rows;
 		if (mod == 0) {
 			startIndex = objectList.size() - rows;
@@ -76,6 +86,10 @@ public class PaginatedList extends JList<String> {
 		return objectList.get(index);
 	}
 	
+	public String getVisibleRange() {
+		return range;
+	}
+	
 	public int getStartIndex() {
 		return startIndex;
 	}
@@ -83,10 +97,77 @@ public class PaginatedList extends JList<String> {
 	private void updatePage() {
 		model.clear();
 		int maxLength = objectList.size();
+		int inc = 0;
 		for (int i = 0; i < rows && maxLength > (startIndex + i); i++) {
 			RecipeObject item = objectList.get(startIndex + i);
 			String title = item.getTitle();
 			model.add(i, title);
+			inc++;
+		}
+		range = startIndex + "-" + (startIndex+inc);
+		notifyRangeSubscribers();
+	}
+	
+	public void addRangeSubscriber(PaginationLabel sub) {
+		rangeSubscribers.add(sub);
+		notifySingleSubscriber(sub);
+	}
+	
+	public void notifySingleSubscriber(PaginationLabel sub) {
+		sub.setRangeText(range);
+	}
+	
+	public void notifyRangeSubscribers() {
+		for (PaginationLabel sub : rangeSubscribers) {
+			sub.setRangeText(range);
 		}
 	}
+	
+	public void setPreviewPanel(JPanel preview) {
+		this.previewPanel = preview;
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		//System.out.println(getSelectedIndex());
+		
+		RecipeObject selected = getSelectedDataItem();
+		
+		if (previewPanel == null || selected == null) {
+			LOG.error("Null value in preview panel or selection object");
+			return;
+		}
+		
+		String title = selected.getTitle();
+		String content = selected.getContent();
+		List<String> ingredients = selected.getIngredientList();
+		
+		
+		//System.out.println(getSelectedIndex());
+		//System.out.println(e.getLastIndex());
+		/*StringBuilder output = new StringBuilder();
+		int firstIndex = e.getFirstIndex();
+        int lastIndex = e.getLastIndex();
+        boolean isAdjusting = e.getValueIsAdjusting();
+        output.append("Event for indexes "
+                      + firstIndex + " - " + lastIndex
+                      + "; isAdjusting is " + isAdjusting
+                      + "; selected indexes:");
+
+        if (isSelectionEmpty()) {
+            output.append(" <none>");
+        } else {
+            // Find out which indexes are selected.
+            int minIndex = getMinSelectionIndex();
+            int maxIndex = getMaxSelectionIndex();
+            for (int i = minIndex; i <= maxIndex; i++) {
+                if (isSelectedIndex(i)) {
+                    output.append(" " + i);
+                }
+            }
+        }
+        System.out.println(output);*/
+	}
+	
+	
 }

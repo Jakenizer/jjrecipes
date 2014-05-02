@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<recipes>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><recipes>
   <recipe id="1">
     <title>New Recipe1</title>
     <content>blanda ihop
@@ -12,7 +11,7 @@ sdföksödlfksö</content>
   <recipe id="2">
     <title>köttbollzizar</title>
     <content>blanda, stek och ät med spaghetti</content>
-    <ingredients>boll;kött;bajs</ingredients>
+    <ingredients>boll;kött;bajs;gummibjörnar</ingredients>
   </recipe>
   <recipe id="3">
     <title>köttbollar</title>
@@ -416,7 +415,7 @@ ghj</content>
   <recipe id="82">
     <title>recipe80</title>
     <content>content80</content>
-    <ingredients>ingredients80</ingredients>
+    <ingredients>ingredients80;majs</ingredients>
   </recipe>
   <recipe id="83">
     <title>recipe81</title>
