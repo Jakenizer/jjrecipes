@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import javax.swing.JLabel;
 

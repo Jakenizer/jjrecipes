@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,8 +27,13 @@ import javax.swing.ListSelectionModel;
 
 import se.jacob.gui.GUI;
 import se.jacob.util.FocusHandler;
+import se.jacob.util.TextAreaLimiter;
+import se.jacob.util.TextFieldLimiter;
 
-
+/**
+ * Common parent view for New Recipe and ExistingRecipe (Opened)
+ *
+ */
 public abstract class CommonRecipeView extends AbstractView{
 
 	private static final long serialVersionUID = 1L;
@@ -66,12 +71,12 @@ public abstract class CommonRecipeView extends AbstractView{
 		ingredientField = new JTextField();
 		ingredientField.setPreferredSize(new Dimension(250, 20));
 		ingredientField.setDocument(new TextFieldLimiter(30, false));
-		/*ingredientField.addActionListener(new ActionListener() {
+		ingredientField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addIngredientToList();
 			}
-		});*/
+		});
 		
 		//ingredienslistan		
 		listModel = new DefaultListModel<>();
@@ -83,15 +88,15 @@ public abstract class CommonRecipeView extends AbstractView{
 		listScrollPane.setPreferredSize(new Dimension(255, 200));
 		
 		ingredientButton = new JButton("Add");
-		/*ingredientButton.addActionListener(new ActionListener() {
+		ingredientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addIngredientToList();
 			}
-		});*/
+		});
 		
 		removeIngredientButton = new JButton("Remove");
-		/*removeIngredientButton.addActionListener(new ActionListener() {
+		removeIngredientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = ingredientList.getSelectedIndex();
@@ -101,10 +106,10 @@ public abstract class CommonRecipeView extends AbstractView{
 						ingredientList.setSelectedIndex(selectedIndex);
 				}
 			}
-		});*/
+		});
 		
 		saveButton = new JButton("Save");
-		//saveButton.addActionListener(getSaveActionListener());
+		saveButton.addActionListener(getSaveActionListener());
 		
 		
 		GroupLayout layout = new GroupLayout(mainPanel);
@@ -189,7 +194,11 @@ public abstract class CommonRecipeView extends AbstractView{
 		ingredientList.ensureIndexIsVisible(maxIndex);		
 		ingredientField.setText("");	
 	}
-
+	
+	/**
+	 * Override to add behaviour when save button is clicked
+	 * @return an ActionListener with the wanted behaviour
+	 */
 	protected abstract ActionListener getSaveActionListener();
 	
 	@Override

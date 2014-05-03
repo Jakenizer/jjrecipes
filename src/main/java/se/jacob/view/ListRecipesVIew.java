@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,14 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.jacob.exception.SearchFileException;
-import se.jacob.panel.ViewFactory.Views;
+import se.jacob.view.ViewFactory.Views;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
-public class ListRecipes extends AbstractView {
+public class ListRecipesVIew extends AbstractView {
 
 	private static final long serialVersionUID = 1L;
-	private final int LIST_WIDTH = 430; 
+	private final int PREVIEW_WIDTH = 500;
+	private final int LIST_WIDTH = 300; 
 	private final int LIST_LENGTH = 20;
 	private final PaginatedList contentList;
 	private DefaultListModel<String> listModel;
@@ -52,9 +53,9 @@ public class ListRecipes extends AbstractView {
 	private JButton selectButton;
 	private final JPanel recipePreview;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ListRecipesVIew.class);
 	
-	public ListRecipes() throws FileNotFoundException, SearchFileException {
+	public ListRecipesVIew() throws FileNotFoundException, SearchFileException {
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel mainPanel = new JPanel();
@@ -77,7 +78,7 @@ public class ListRecipes extends AbstractView {
 		
 		buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		buttonPanel.setBackground(Color.LIGHT_GRAY);
-		buttonPanel.setPreferredSize(new Dimension(LIST_WIDTH, 36));
+		buttonPanel.setPreferredSize(new Dimension(LIST_WIDTH, 72));
 		
 		toFirstButton = new JButton(new AbstractAction("First") {
 			private static final long serialVersionUID = 1L;
@@ -124,22 +125,15 @@ public class ListRecipes extends AbstractView {
 				RecipeObject selectedItem = contentList.getSelectedDataItem();
 				//Öppna Existing Recipe
 				if (selectedItem != null) {
-					ExistingRecipe view = (ExistingRecipe) ViewFactory.getView(Views.OPEN_RECIPE, selectedItem);
+					ExistingRecipeView view = (ExistingRecipeView) ViewFactory.getView(Views.OPEN_RECIPE, selectedItem);
 					if (view != null) {
 						view.addClosableTab();
 						parent.remove(that);
-						LOG.info("Recipe with ID: {} and title: {} opened", selectedItem.getId(), selectedItem.getTitle());				
+						LOG.info("Recipe with ID: {} and title: '{}' opened", selectedItem.getId(), selectedItem.getTitle());				
 					}
 				}
 			}
 		}); 
-		contentList.addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == 10) {
-					selectButton.doClick();
-				}
-			}
-		});
 		
 		buttonPanel.add(toFirstButton);
 		buttonPanel.add(previousButton);
@@ -199,7 +193,7 @@ public class ListRecipes extends AbstractView {
                         GroupLayout.PREFERRED_SIZE)
              )
         );
-		contentList.addKeyListener(new ArrowKeyListener());
+		contentList.addKeyListener(new ListKeyListener());
 		contentList.addListSelectionListener(new RecipelistListener());
 		mainPanel.setBackground(Color.LIGHT_GRAY);
 		add(mainPanel);	
@@ -212,7 +206,7 @@ public class ListRecipes extends AbstractView {
 	
 	private JPanel setupPreviewPanel() {
 		JPanel recipePreview = new JPanel(new BorderLayout());
-		recipePreview.setPreferredSize(new Dimension(LIST_WIDTH, 340));
+		recipePreview.setPreferredSize(new Dimension(PREVIEW_WIDTH, 340));
 		recipePreview.setBackground(new Color(230, 230, 230));
 		
 		JLabel titleLabel = new JLabel();
@@ -326,8 +320,7 @@ public class ListRecipes extends AbstractView {
 		}
 	}
 	
-	private class ArrowKeyListener extends KeyAdapter {
-		
+	private class ListKeyListener extends KeyAdapter {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			int keyCode = e.getKeyCode();
@@ -336,8 +329,12 @@ public class ListRecipes extends AbstractView {
 		        	previousButton.doClick();		            
 		        	break;
 		        }
-		        case KeyEvent.VK_RIGHT : {
+		        case KeyEvent.VK_RIGHT: {
 		        	nextButton.doClick();
+		        	break;
+		        }
+		        case KeyEvent.VK_ENTER: {
+		        	selectButton.doClick();
 		        	break;
 		        }
 		     }

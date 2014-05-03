@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import se.jacob.xml.RecipeObject;
 public class PaginatedList extends JList<String> {
 	
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(ListRecipes.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ListRecipesVIew.class);
 	private List<RecipeObject> objectList;
 	private int rows;
 	private int startIndex = 0;

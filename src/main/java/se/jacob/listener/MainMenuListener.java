@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.jacob.panel.AbstractView;
-import se.jacob.panel.ViewFactory;
-import se.jacob.panel.ViewFactory.Views;
+import se.jacob.view.AbstractView;
+import se.jacob.view.ViewFactory;
+import se.jacob.view.ViewFactory.Views;
 
 public class MainMenuListener implements ActionListener {
 	
@@ -29,7 +29,6 @@ public class MainMenuListener implements ActionListener {
 			}
 			
 			case "Search Recipe": {
-				//log.info("Recipe with ID: {} and name: {} opened", obj.getId(), obj.getTitle());
 				view = ViewFactory.getView(Views.SEARCH_AND_OPEN_RECIPE);
 				break;
 			}

@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +17,7 @@ import se.jacob.exception.SearchFileException;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
-public class ExistingRecipe extends CommonRecipeView {
+public class ExistingRecipeView extends CommonRecipeView {
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class ExistingRecipe extends CommonRecipeView {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonRecipeView.class);
 	private RecipeObject obj;
 	
-	public ExistingRecipe(RecipeObject obj) throws FileNotFoundException {
+	public ExistingRecipeView(RecipeObject obj) throws FileNotFoundException {
 		this.obj = obj;
 		String contentString = obj.getContent();
 		recipeText.setText(contentString);

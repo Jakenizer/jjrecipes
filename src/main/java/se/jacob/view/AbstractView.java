@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.awt.Color;
 import java.awt.FlowLayout;

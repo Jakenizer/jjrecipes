@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.io.FileNotFoundException;
 
@@ -25,7 +25,7 @@ public class ViewFactory {
 		switch(v) {
 			case NEW_RECIPE: {
 				try {
-					view = new NewRecipe();
+					view = new NewRecipeView();
 				} catch (FileNotFoundException e) {
 					LOG.error(e.getMessage());
 				}
@@ -33,7 +33,7 @@ public class ViewFactory {
 			}
 			case LIST_RECIPES: {
 				try {
-					view = new ListRecipes();
+					view = new ListRecipesVIew();
 				} catch (FileNotFoundException | SearchFileException e1) {
 					LOG.error("Error in when populating list in  List Recipes" + e1.getMessage());
 				}
@@ -56,7 +56,7 @@ public class ViewFactory {
 						Integer idAttribute = obj.getId();
 						if (idAttribute != null && (idAttribute > 0)) {
 							try {
-								view = new ExistingRecipe(obj);
+								view = new ExistingRecipeView(obj);
 								LOG.info(rc.getValue() + ". Recipe with ID: {} and title: {} opened", obj.getId(), obj.getTitle());
 							} catch (FileNotFoundException e) {
 								LOG.error(e.getMessage());
@@ -95,7 +95,7 @@ public class ViewFactory {
 				}
 				RecipeObject obj = (RecipeObject) args[0];
 				try {
-					view = new ExistingRecipe(obj);
+					view = new ExistingRecipeView(obj);
 				} catch (FileNotFoundException e) {
 					LOG.error(e.getMessage());				
 				}

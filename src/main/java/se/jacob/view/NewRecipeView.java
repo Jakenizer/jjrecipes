@@ -1,4 +1,4 @@
-package se.jacob.panel;
+package se.jacob.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,12 +18,12 @@ import se.jacob.exception.SearchFileException;
 import se.jacob.xml.FileHandler;
 import se.jacob.xml.RecipeObject;
 
-public class NewRecipe extends CommonRecipeView {
+public class NewRecipeView extends CommonRecipeView {
 
 	private static final long serialVersionUID = 1L;	
-	private static final Logger LOG = LoggerFactory.getLogger(NewRecipe.class);
+	private static final Logger LOG = LoggerFactory.getLogger(NewRecipeView.class);
 
-	public NewRecipe() throws FileNotFoundException {
+	public NewRecipeView() throws FileNotFoundException {
 		super();
 	}
 	
